@@ -1,5 +1,6 @@
 const Hapi = require('@hapi/hapi')
 const Boom = require('@hapi/boom')
+const oracledb = require('oracledb')
 
 const server = Hapi.Server({
   port: 8000,
@@ -16,47 +17,48 @@ server.route({
   method: 'GET',
   path: '/test',
   handler: async (request, h) => {
-    const odbpool = request.primary.odbpool
-    // had the decorate option is not set, use the following to get the conneciton pool
-    // const odbpool = request.server.plugins['hapi-oracledb'].odbpool
+    const pool = request.primary.pool
+    // had the decorate option is not set or set to boolean true, use the following to get the conneciton pool
+    // const pool = request.server.plugins['hapi-oracledb'].pool
     let conn, res
 
     try {
-      conn = await odbpool.getConnection()
+      conn = await pool.getConnection()
     } catch (err) {
       throw err
     }
 
     try {
-      res = await conn.execute('SELECT SYSDATE, USER FROM dual')
+      res = await conn.execute(
+        'SELECT SYSDATE, USER FROM dual',
+        {},
+        { outFormat: oracledb.OBJECT }
+      )
     } catch (err) {
       throw err
     }
     await conn.release()
-    return res
+    return res.rows
   }
 })
 
 const init = async () => {
+  const poolAttrs = {
+    user: 'dummy',
+    password: 'dummypass',
+    connectString: '127.0.0.1/ORCLCDB.localdomain'
+  }
   await server.register({
     // use this if hapi-oracledb is installed
     // plugin: require('hapi-oracledb'),
     plugin: require('./lib'),
     options: [
       {
-        poolAttrs: {
-          user: 'dummy',
-          password: 'dummypass',
-          connectString: '127.0.0.1/ORCLCDB.localdomain'
-        },
+        poolAttrs,
         decorate: 'primary'
       },
       {
-        poolAttrs: {
-          user: 'dummy',
-          password: 'dummypass',
-          connectString: '127.0.0.1/ORCLCDB.localdomain'
-        },
+        poolAttrs,
         decorate: 'secondary'
       }
     ]

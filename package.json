@@ -1,18 +1,29 @@
 {
   "name": "hapi-oracledb",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A simple Hapi oracledb connection plugin",
+  "main": "lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "lab -M 5000 -a @hapi/code"
   },
-  "keywords": [],
+  "keywords": [
+    "hapi",
+    "oracledb"
+  ],
   "author": "",
   "license": "ISC",
+  "engines": {
+    "node": ">= 8"
+  },
   "dependencies": {
     "oracledb": "^3.1.2"
   },
   "devDependencies": {
-    "@hapi/hapi": "^18.3.1"
+    "@hapi/code": "^5.3.1",
+    "@hapi/hapi": ">= 18.0.0",
+    "@hapi/lab": "^19.0.1"
+  },
+  "peerDependencies": {
+    "@hapi/hapi": ">= 18.0.0"
   }
 }
