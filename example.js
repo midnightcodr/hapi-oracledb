@@ -25,6 +25,7 @@ server.route({
     try {
       conn = await pool.getConnection()
     } catch (err) {
+      console.log(err)
       throw err
     }
 
@@ -35,6 +36,7 @@ server.route({
         { outFormat: oracledb.OBJECT }
       )
     } catch (err) {
+      console.log(err)
       throw err
     }
     await conn.release()
