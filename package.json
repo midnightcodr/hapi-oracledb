@@ -1,6 +1,6 @@
 {
   "name": "hapi-oracledb",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "A simple Hapi oracledb connection plugin",
   "main": "lib/index.js",
   "scripts": {
